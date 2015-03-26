@@ -1,0 +1,44 @@
+# You can have multiple kernels, if so name each with it's version
+# This configuration only has one possible kernel so I didn't rename it
+#DEFAULT menu.c32
+DEFAULT vesamenu.c32
+PROMPT 0
+TIMEOUT 300
+ONTIMEOUT localdisk
+MENU TITLE PXE Network Boot
+
+#LABEL localdisk
+#    MENU LABEL ^Local Hard Drive
+#    MENU DEFAULT
+#    LOCALBOOT 0
+
+LABEL reboot
+    COM32 reboot.c32
+
+LABEL centos6
+    MENU LABEL ^CentOS 6 From mirrors and Kickstart
+    MENU DEFAULT
+    LINUX http://centos.mirror.ptisp.pt/centos/6.6/os/x86_64/isolinux/vmlinuz
+    APPEND initrd=http://centos.mirror.ptisp.pt/centos/6.6/os/x86_64/isolinux/initrd.img ks=http://172.17.200.10/anaconda-ks.cfg ramdisk_size=10000
+
+LABEL centos5
+    MENU LABEL ^CentOS 5 From mirrors and Kickstart
+    MENU DEFAULT
+    LINUX http://centos.mirror.ptisp.pt/centos/5.11/os/x86_64/isolinux/vmlinuz
+    APPEND initrd=http://centos.mirror.ptisp.pt/centos/5.11/os/x86_64/isolinux/initrd.img ks=http://172.17.200.10/ks5.cfg ramdisk_size=10000
+
+
+#LABEL install_32bit
+#    MENU LABEL ^CentOS 6.0 (32-bit) Install
+#    KERNEL centos/i386/vmlinuz
+#    APPEND ks=http://NETINSTALL-HOST/ks/b32.ks initrd=centos/i386/initrd.img ramdisk_size=100000
+#
+#LABEL install_64bit
+#    MENU LABEL ^CentOS 6.0 (64-bit) Install
+#    KERNEL centos/x86_64/vmlinuz
+#    APPEND ks=http://NETINSTALL-HOST/ks/b64.ks initrd=centos/x86_64/initrd.img ramdisk_size=100000
+#
+#LABEL linux
+#  kernel vmlinuz
+#  append ksdevice=eth0 load_ramdisk=1 initrd=initrd.img network ks=nfs:10.25.0.129:/share/kickstart/test64-ks
+#
