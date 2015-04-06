@@ -1,0 +1,56 @@
+#!ipxe
+
+# Load config
+chain --autofree netboot.ipxe.cfg ||
+
+# Main menu
+menu
+item --gap --             ------------------------- Select an action ------------------------------
+item --key 5 centos_5     Install CentOS 5.11 (x86_64)
+item --key 6 centos_6     Install CentOS 6.6 (x86_64)
+item --key r reboot       Reboot
+item
+item --key x exit         Exit iPXE and continue BIOS boot
+item
+item
+item
+item --gap --             ---------------------------- Host info ----------------------------------
+item --gap                MAC address......${net0/mac} ||
+item --gap                IP address.......${ip}/${netmask} ||
+item --gap                Default gateway..${gateway} ||
+item --gap                DNS server.......${dns} ||
+item --gap                Serial...........${serial} ||
+item --gap                Manufacturer.....${manufacturer} ||
+item --gap                Product..........${product} ||
+item --gap                BIOS platform....${platform} ||
+choose selection && goto ${selection}
+
+# Menu item Centos 5
+:centos_5
+kernel ${centos5_img_url}/vmlinuz ip=dhcp ksdevice=eth0 ks=${centos5_ks_url}
+initrd ${centos5_img_url}/initrd.img
+initrd ${centos5_dd_url}/dd.img
+
+# Menu item Centos 6
+:centos_6
+kernel ${centos6_img_url}/vmlinuz ip=dhcp ksdevice=eth0 ks=${centos6_ks_url}
+initrd ${centos6_img_url}/initrd.img
+goto boot_kernel
+
+# Menu item Reboot
+:reboot
+echo Rebooting...
+reboot
+
+# Common
+:boot_kernel
+echo
+echo
+echo -- -------------------------- Loaded images --------------------------------
+imgstat
+echo -- -------------------------------------------------------------------------
+echo
+echo
+echo Booting in ${sleep_delay} seconds...
+sleep ${sleep_delay}
+boot
